@@ -15,6 +15,9 @@ werkzeug = "*"
 wtforms = "*"
 sqlalchemy = "*"
 flask-bootstrap = "*"
+greenlet = "*"
+python-dotenv = "*"
+bleach = "*"
 
 [dev-packages]
 

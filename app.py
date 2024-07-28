@@ -2,25 +2,29 @@ from flask import Flask, render_template, redirect, url_for, flash, request, abo
 from flask_bootstrap import Bootstrap
 from flask_ckeditor import CKEditor
 from datetime import date
+from dotenv import load_dotenv
+import os
 
 from flask_wtf import CSRFProtect
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
-from flask_gravatar import Gravatar
+# from flask_gravatar import Gravatar
 from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 from functools import wraps
 
+load_dotenv()
+
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 csrf = CSRFProtect(app)
 ckeditor = CKEditor(app)
 Bootstrap(app)
 
 # CONNECT TO DB
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+
 db = SQLAlchemy(app)
 
 login_manager = LoginManager()
@@ -60,6 +64,15 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     blogpost_id = db.Column(db.Integer, db.ForeignKey('blog_posts.id'), nullable=False)
     text = db.Column(db.String(250), nullable=False)
+
+
+# Helper function for Gravatar
+import hashlib
+
+
+def get_gravatar_url(email, size=100):
+    email_hash = hashlib.md5(email.lower().encode('utf-8')).hexdigest()
+    return f"https://www.gravatar.com/avatar/{email_hash}?d=identicon&s={size}"
 
 
 # with app.app_context():
