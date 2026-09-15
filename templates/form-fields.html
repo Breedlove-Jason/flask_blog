@@ -1,0 +1,1 @@
+<form method="post" class="editor">{{ form.hidden_tag() }}{% for field in form if field.type not in ['CSRFTokenField','HiddenField'] %}{% if field.type == 'SubmitField' %}{{ field(class_='button') }}{% else %}<div>{{ field.label }}{{ field() }}{% for error in field.errors %}<p class="error" role="alert">{{ error }}</p>{% endfor %}</div>{% endif %}{% endfor %}</form>
