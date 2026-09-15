@@ -13,6 +13,7 @@ from markupsafe import Markup
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
+from journal import NOTES
 
 load_dotenv()
 app = Flask(__name__)
@@ -86,7 +87,21 @@ def safe_body(value):
 
 @app.route('/')
 def get_all_posts():
-    return render_template('index.html', all_posts=BlogPost.query.order_by(BlogPost.id.desc()).limit(100).all())
+    return render_template('index.html', all_posts=BlogPost.query.order_by(BlogPost.id.desc()).limit(100).all(), notes=NOTES)
+
+@app.route('/notes/<slug>')
+def project_note(slug):
+    note = next((item for item in NOTES if item['slug'] == slug), None)
+    if note is None:
+        abort(404)
+    return render_template('note.html', note=note)
+
+@app.route('/editor')
+@login_required
+def editor():
+    if not is_admin():
+        return render_template('editor-pending.html', setup_pending=app.config['ADMIN_USER_ID'] == 0), 403
+    return render_template('editor.html', posts=BlogPost.query.order_by(BlogPost.id.desc()).all())
 
 @app.route('/register', methods=['GET','POST'])
 def register():

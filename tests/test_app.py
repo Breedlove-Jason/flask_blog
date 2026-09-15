@@ -78,3 +78,17 @@ def test_duplicate_title_does_not_crash(client):
     client.post('/new-post',data=post_data())
     assert client.post('/new-post',data=post_data()).status_code == 200
     assert BlogPost.query.count() == 1
+
+def test_sample_articles_and_home_photo(client):
+    html=client.get('/').get_data(as_text=True)
+    assert 'rebuilding-pacman' in html and 'SAMPLE ARTICLE' in html
+    for slug in ['rebuilding-pacman','reuters-document-similarity','building-field-notes']:
+        assert client.get('/notes/'+slug).status_code == 200
+    assert client.get('/notes/missing').status_code == 404
+    assert b'blogimagetools.jpg' in client.get('/static/css/field-notes.css').data
+
+def test_editor_requires_explicit_access(client):
+    register(client)
+    assert client.get('/editor').status_code == 403
+    app.config['ADMIN_USER_ID']=User.query.first().id
+    assert client.get('/editor').status_code == 200
