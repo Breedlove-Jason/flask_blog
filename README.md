@@ -1,3 +1,7 @@
+![Field Notes — IDEAS FROM THE BUILD](docs/project-banner.svg)
+
+[Open live app](https://blog.jasonbreedlove.dev) · [Portfolio](https://www.jasonbreedlove.dev) · [Browse source](https://github.com/Breedlove-Jason/flask_blog)
+
 # Field Notes — Flask Blog
 Jason Breedlove's Python blog, modernized from the original Flask learning project.
 
@@ -29,12 +33,12 @@ Configure these server-side environment variables:
 
 Initialize tables once against the production database with the Flask CLI, then provision the editor. Do not run schema initialization on every request. Existing databases require a backup and schema/data review before reuse. This version intentionally does not deploy the old committed SQLite database or migrate its accounts.
 
-Local SQLite is for development only. PostgreSQL deployment has not yet been exercised. Public registration needs an abuse-control strategy before broader promotion; email verification and password reset are not implemented.
+Local SQLite is for development only. Public registration needs an abuse-control strategy before broader promotion; email verification and password reset are not implemented.
 
-Suggested domain: blog.jasonbreedlove.dev.
+Live site: https://blog.jasonbreedlove.dev.
 
 ## Verification
-Six automated integration tests cover registration/login, explicit editor authorization (including a second registrant), author IDs, post editing, escaped comments, dependent comment deletion, CSRF, duplicate titles, and missing posts. Browser and hosted PostgreSQL verification remain pending.
+Six automated integration tests cover registration/login, explicit editor authorization (including a second registrant), author IDs, post editing, escaped comments, dependent comment deletion, CSRF, duplicate titles, and missing posts. The project owner confirmed the hosted site during deployment; automated tests do not establish production database behavior.
 
 ## Changes
 Removed broken Gravatar initialization, fixed author foreign keys, replaced hard-coded administrator ID, changed logout/deletion to POST, removed open referrer redirects and the nonworking PHP contact form, and replaced duplicated Bootstrap page shells with one base template. Rich text uses a plain textarea accepting a small HTML subset; no external editor scripts are required.
